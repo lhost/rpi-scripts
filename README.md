@@ -32,3 +32,9 @@ If you like to turn you RPi into remote control of your robots, run this command
 ./nodemcu-webdriver.sh
 ```
 
+This will install:
+- RabbitMQ server with MQTT plugin enabled
+- nginx (as reverse proxy) with the following proxy:
+-- http://your.raspberry.pi/rmq -->  port 15672 (RabbitMQ web interface)
+-- http://your.raspberry.pi/robot/ --> port 4999 (web joistick - webdriver)
+
