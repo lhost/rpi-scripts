@@ -43,11 +43,17 @@ EOF
 sudo tee /etc/systemd/system/webdriver.service <<EOF
 [Unit]
 Description = NodeMCU webdriver
-After = network.target
+After = network.target rabbitmq-server.service
+Wants=network.target rabbitmq-server.service
+WantedBy=multi-user.target
+
 
 [Service]
 PermissionsStartOnly = true
 PIDFile = /run/webdriver/webdriver.pid
+RemainAfterExit=no
+Restart=on-failure
+RestartSec=2m
 User = www-data
 Group = www-data
 WorkingDirectory = /home/pi/mqtt-robot-webdriver
@@ -65,6 +71,7 @@ EOF
 
 sudo chmod 755 /etc/systemd/system/webdriver.service
 sudo systemctl daemon-reload
+sudo systemctl enable webdriver
 sudo service webdriver restart
 
 #
