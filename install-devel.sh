@@ -4,7 +4,7 @@ KERNEL_HEADERS=linux-headers-amd64
 
 # detect Raspberry Pi
 if [ -f /proc/device-tree/model ]; then
-	grep -q -i Raspberry
+	grep -q -i Raspberry /proc/device-tree/model
 	if [ $? -eq 0 ]; then
 		KERNEL_HEADERS=raspberrypi-kernel-headers
 	fi
