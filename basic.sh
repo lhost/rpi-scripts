@@ -8,3 +8,5 @@ sudo apt-get install -y \
 liquidprompt_activate
 sudo liquidprompt_activate
 
+sudo apt -y purge "pulseaudio*"
+

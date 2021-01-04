@@ -51,4 +51,7 @@ no-dhcp-interface=lo
 dhcp-range=$WIFI_NETWORK.2,$WIFI_NETWORK.254,255.255.255.0,12h
 EOF
 
+sudo cat > /etc/sysctl.d/ip_forward.conf <<EOF
+net.ipv4.ip_forward=1
+EOF
 

@@ -5,7 +5,11 @@ sudo apt-get install -y \
 	matchbox-keyboard \
 	lxterminal \
 	raspberrypi-ui-mods rpi-chromium-mods \
-	realvnc-vnc-viewer
+	realvnc-vnc-viewer \
+	xinput-calibrator \
+	xinit \
+	xserver-xorg-video-fbturbo \
+	gldriver-test
 
 sudo apt-get purge -y termit
 
@@ -85,6 +89,25 @@ URL=/usr/share/raspi-ui-overrides/applications/lxterminal.desktop
 EOF
 
 # }}}
+
+cat > ~/Desktop/inputmethods-matchbox-keyboard.desktop <<EOF
+[Desktop Entry]
+Type=Link
+Name=Keyboard
+Icon=matchbox-keyboard
+URL=/usr/share/applications/inputmethods/matchbox-keyboard.desktop
+EOF
+
+cat > ~/Desktop/Chrome.desktop <<EOF
+[Desktop Entry]
+Type=Link
+Name=Chromium Web Browser
+Icon=chromium-browser
+URL=/usr/share/applications/chromium-browser.desktop
+EOF
+
+cd waveshare-LCD-show/
+./LCD35C-show
 
 # TODO: change options in /boot/config.txt
 #

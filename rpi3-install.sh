@@ -7,3 +7,5 @@
 ./wifi-access-point.sh
 ./nodemcu-webdriver.sh
 
+apt-get install -y \
+	point-rpi

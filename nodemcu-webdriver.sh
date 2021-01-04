@@ -13,10 +13,10 @@ sudo apt-get install -y \
 	nginx gunicorn
 
 # rabbgitmq
-rabbitmq-plugins enable rabbitmq_management rabbitmq_mqtt
-rabbitmqctl add_user  $MQTT_USER $MQTT_PASSWORD
-rabbitmqctl set_user_tags $MQTT_USER administrator
-rabbitmqctl set_permissions -p / $MQTT_USER ".*" ".*" ".*"
+sudo rabbitmq-plugins enable rabbitmq_management rabbitmq_mqtt
+sudo rabbitmqctl add_user  $MQTT_USER $MQTT_PASSWORD
+sudo rabbitmqctl set_user_tags $MQTT_USER administrator
+sudo rabbitmqctl set_permissions -p / $MQTT_USER ".*" ".*" ".*"
 
 # python
 sudo python -m pip install paho-mqtt esptool adafruit-ampy requests click
