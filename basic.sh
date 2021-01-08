@@ -2,11 +2,14 @@
 # vim: ft=sh fdm=marker
 
 sudo apt-get install -y \
-	git etckeeper screen mc vim ssh liquidprompt
+	git etckeeper screen mc vim ssh liquidprompt \
+	deborphan \
+	rename
+
 
 # liquidprompt
 liquidprompt_activate
 sudo liquidprompt_activate
 
-sudo apt -y purge "pulseaudio*"
+#sudo apt -y purge "pulseaudio*"
 
