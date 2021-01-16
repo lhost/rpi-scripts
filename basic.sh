@@ -4,7 +4,8 @@
 sudo apt-get install -y \
 	git etckeeper screen mc vim ssh liquidprompt \
 	deborphan \
-	rename
+	rename \
+	lm-sensors i2c-tools
 
 
 # liquidprompt
