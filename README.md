@@ -1,5 +1,12 @@
 # Installation scripts for Raspberry Pi (Raspbian)
 
+# Install basic tools
+
+On new fresh Raspberry Pi run
+```
+cat basic.sh | ssh pi@raspberrypi.local
+```
+
 ## Configuration
 
 ```bash
