@@ -12,7 +12,10 @@ fi
 apt-get install -y \
 	hostapd dnsmasq
 
-echo "iptables -t nat -A POSTROUTING -s $WIFI_NETWORK.0/24 ! -d $WIFI_NETWORK.0/24 -j MASQUERADE" | tee -a /etc/rc.local
+grep -q iptables /etc/rc.local || echo iptables >> /etc/rc.local
+sed -i -e "s/^exit 0//g; s/^iptables/iptables -t nat -A POSTROUTING -s $WIFI_NETWORK.0\/24 ! -d $WIFI_NETWORK.0\/24 -j MASQUERADE/g;" /etc/rc.local
+
+iptables-save | grep -q MASQUERADE || /etc/rc.local
 
 [ -f /etc/network/interfaces.d/eth0 ] || cat > /etc/network/interfaces.d/eth0 <<EOF
 auto eth0
@@ -34,7 +37,6 @@ EOF
 
 [ -f /etc/hostapd/hostapd.conf ] || cat > /etc/hostapd/hostapd.conf <<EOF
 interface=wlan0
-driver=nl80211
 ssid=$WIFI_SSID
 channel=6
 wmm_enabled=0
