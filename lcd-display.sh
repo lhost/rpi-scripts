@@ -9,7 +9,8 @@ sudo apt-get install -y \
 	xinput-calibrator \
 	xinit \
 	xserver-xorg-video-fbturbo \
-	gldriver-test
+	gldriver-test \
+	point-rpi
 
 sudo apt-get purge -y termit
 
