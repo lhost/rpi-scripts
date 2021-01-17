@@ -1,27 +1,30 @@
 #!/bin/bash
 # vim: ft=sh fdm=marker
 
-
 WIFI_SSID="${WIFI_SSID:-rpi3}"
 WIFI_PASSWORD="${WIFI_PASSWORD:-rpi345678pass}"
 WIFI_NETWORK="${WIFI_NETWORK:-192.168.33}"
 
-sudo apt-get install -y \
+if [ "$EUID" -ne 0 ]; then
+	exec sudo $0
+fi
+
+apt-get install -y \
 	hostapd dnsmasq
 
-echo "iptables -t nat -A POSTROUTING -s $WIFI_NETWORK.0/24 ! -d $WIFI_NETWORK.0/24 -j MASQUERADE" | sudo tee -a /etc/rc.local
+echo "iptables -t nat -A POSTROUTING -s $WIFI_NETWORK.0/24 ! -d $WIFI_NETWORK.0/24 -j MASQUERADE" | tee -a /etc/rc.local
 
-[ -f /etc/network/interfaces.d/eth0 ] || sudo cat > /etc/network/interfaces.d/eth0 <<EOF
+[ -f /etc/network/interfaces.d/eth0 ] || cat > /etc/network/interfaces.d/eth0 <<EOF
 auto eth0
 iface eth0 inet dhcp
 EOF
 
-[ -f /etc/network/interfaces.d/lo ] || sudo cat > /etc/network/interfaces.d/lo <<EOF
+[ -f /etc/network/interfaces.d/lo ] || cat > /etc/network/interfaces.d/lo <<EOF
 auto lo
 iface lo inet loopback
 EOF
 
-[ -f /etc/network/interfaces.d/wlan0 ] || sudo cat > /etc/network/interfaces.d/wlan0 <<EOF
+[ -f /etc/network/interfaces.d/wlan0 ] || cat > /etc/network/interfaces.d/wlan0 <<EOF
 auto wlan0
 iface wlan0 inet static
 	hostapd /etc/hostapd/hostapd.conf
@@ -29,7 +32,7 @@ iface wlan0 inet static
 	netmask 255.255.255.0
 EOF
 
-[ -f /etc/hostapd/hostapd.conf ] || sudo cat > /etc/hostapd/hostapd.conf <<EOF
+[ -f /etc/hostapd/hostapd.conf ] || cat > /etc/hostapd/hostapd.conf <<EOF
 interface=wlan0
 driver=nl80211
 ssid=$WIFI_SSID
@@ -45,13 +48,13 @@ wpa_pairwise=TKIP
 rsn_pairwise=CCMP
 EOF
 
-sudo cat > /etc/dnsmasq.d/$WIFI_SSID.conf <<EOF
+cat > /etc/dnsmasq.d/$WIFI_SSID.conf <<EOF
 interface=lo,wlan0
 no-dhcp-interface=lo
 dhcp-range=$WIFI_NETWORK.2,$WIFI_NETWORK.254,255.255.255.0,12h
 EOF
 
-sudo cat > /etc/sysctl.d/ip_forward.conf <<EOF
+cat > /etc/sysctl.d/ip_forward.conf <<EOF
 net.ipv4.ip_forward=1
 EOF
 
