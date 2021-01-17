@@ -22,6 +22,7 @@ sudo rabbitmqctl set_permissions -p / $MQTT_USER ".*" ".*" ".*"
 sudo python -m pip install paho-mqtt esptool adafruit-ampy requests click
 
 # webdriver {{{
+cd /home/pi
 git clone https://github.com/lhost/mqtt-robot-webdriver/
 git clone https://github.com/lhost/mqtt-robot-nodemcu
 cat > ~/mqtt-robot-webdriver/driver.ini <<EOF
@@ -45,8 +46,6 @@ sudo tee /etc/systemd/system/webdriver.service <<EOF
 Description = NodeMCU webdriver
 After = network.target rabbitmq-server.service
 Wants=network.target rabbitmq-server.service
-WantedBy=multi-user.target
-
 
 [Service]
 PermissionsStartOnly = true
@@ -57,7 +56,7 @@ RestartSec=2m
 User = www-data
 Group = www-data
 WorkingDirectory = /home/pi/mqtt-robot-webdriver
-ExecStartPre = /bin/mkdir /run/webdriver
+ExecStartPre = /bin/mkdir -p /run/webdriver
 ExecStartPre = /bin/chown -R www-data:www-data /run/webdriver
 ExecStart = /usr/bin/env gunicorn -b 0.0.0.0:5000 --pid /run/webdriver/webdriver.pid wsgi
 ExecReload = /bin/kill -s HUP \$MAINPID
@@ -145,6 +144,7 @@ EOF
 
 sudo ln -s -f /etc/nginx/sites-available/robot /etc/nginx/sites-enabled/ \
 	&& sudo rm -f /etc/nginx/sites-enabled/default
-service nginx reload
+sudo service nginx reload
 
+sudo etckeeper commit -m 'Installed NodeMCU webdriver'
 
