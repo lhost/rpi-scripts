@@ -51,12 +51,52 @@ rsn_pairwise=CCMP
 EOF
 
 cat > /etc/dnsmasq.d/$WIFI_SSID.conf <<EOF
-interface=lo,wlan0
-no-dhcp-interface=lo
+interface=wlan0
+bind-interfaces
+resolv-file=/dev/null
+bogus-priv
+listen-address=$WIFI_NETWORK.1
+no-dhcp-interface=lo,eth0
 dhcp-range=$WIFI_NETWORK.2,$WIFI_NETWORK.254,255.255.255.0,12h
+address=/#/$WIFI_NETWORK.1
 EOF
+
+grep -q $WIFI_NETWORK.1  /etc/hosts || echo "$WIFI_NETWORK.1 $WIFI_SSID.local robot" >> /etc/hosts
+grep -q DNSMASQ_EXCEPT /etc/default/dnsmasq || echo "DNSMASQ_EXCEPT=lo" >> /etc/default/dnsmasq
+sed -i -e 's/^DNSMASQ_EXCEPT=.*$/DNSMASQ_EXCEPT=lo/g' /etc/default/dnsmasq
 
 cat > /etc/sysctl.d/ip_forward.conf <<EOF
 net.ipv4.ip_forward=1
 EOF
 
+tee /etc/nginx/sites-available/captive-portal <<EOF
+server {
+		listen 80 default_server;
+		listen [::]:80 default_server;
+		server_name _;
+
+		#rewrite ^ http://robot/;
+
+		root /var/www/html;
+
+		index index.html;
+		# Handle iOS
+		if (\$http_user_agent ~* (CaptiveNetworkSupport) ) {
+			return 302 http://robot/;
+		}
+
+		if (\$request_method !~ ^(GET|HEAD|POST)$) { return 444; }
+		location / {
+			return 302 http://robot/;
+		}
+#       location /letsconnect {
+#               # First attempt to serve request as file, then
+#               # as directory, then fall back to displaying a 404.
+#               try_files \$uri \$uri/ =404;
+#       }
+}
+EOF
+
+ln -s -f /etc/nginx/sites-available/captive-portal /etc/nginx/sites-enabled/ \
+	&& rm -f /etc/nginx/sites-enabled/default
+service nginx reload

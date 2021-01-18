@@ -116,29 +116,32 @@ EOF
 
 sudo tee /etc/nginx/sites-available/robot <<EOF
 server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    server_name _;
+	listen 80 ;
+	listen [::]:80;
+	server_name robot;
 
-    root /var/www/html;
+	root /var/www/html;
 
-    location /rmq/ {
-        proxy_pass  http://localhost:15672/;
-        include /etc/nginx/proxy-setting.conf;
-    }
-    
-    location /static/ {
-        access_log off;
-        proxy_pass  http://127.0.0.1:5000/static/;
-        include /etc/nginx/proxy-setting.conf;
-    }
-    location /robot/ {
-        if (\$request_method = POST) {
-            access_log off;
-        }
-        proxy_pass  http://localhost:5000/;
-        include /etc/nginx/proxy-setting.conf;
-    }
+	location /rmq/ {
+		if (\$request_method = POST) {
+			access_log off;
+		}
+		proxy_pass  http://localhost:15672/;
+		include /etc/nginx/proxy-setting.conf;
+	}
+
+	location /static/ {
+		access_log off;
+		proxy_pass  http://127.0.0.1:5000/static/;
+		include /etc/nginx/proxy-setting.conf;
+	}
+	location /robot/ {
+		if (\$request_method = POST) {
+			access_log off;
+		}
+		proxy_pass  http://localhost:5000/;
+		include /etc/nginx/proxy-setting.conf;
+	}
 }
 EOF
 
