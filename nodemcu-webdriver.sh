@@ -122,24 +122,24 @@ server {
 
 	root /var/www/html;
 
-	location /rmq/ {
+	location /rmq {
 		if (\$request_method = POST) {
 			access_log off;
 		}
-		proxy_pass  http://localhost:15672/;
+		proxy_pass  http://localhost:15672;
 		include /etc/nginx/proxy-setting.conf;
 	}
 
-	location /static/ {
+	location /static {
 		access_log off;
-		proxy_pass  http://127.0.0.1:5000/static/;
+		proxy_pass  http://127.0.0.1:5000/static;
 		include /etc/nginx/proxy-setting.conf;
 	}
-	location /robot/ {
+	location /robot {
 		if (\$request_method = POST) {
 			access_log off;
 		}
-		proxy_pass  http://localhost:5000/;
+		proxy_pass  http://localhost:5000;
 		include /etc/nginx/proxy-setting.conf;
 	}
 }
