@@ -6,6 +6,7 @@ MQTT_USER="${MQTT_USER:-robot}"
 MQTT_PASSWORD="${MQTT_PASSWORD:-robot}"
 
 sudo apt-get install -y \
+	acl \
 	python-sense-emu python3-sense-emu python-sense-emu-doc \
 	python-configparser \
 	python-flask python-pip \
@@ -13,6 +14,8 @@ sudo apt-get install -y \
 	nginx gunicorn
 
 # rabbgitmq
+sudo setfacl -d -m u:rabbitmq:r-x,m::rwx /etc/rabbitmq
+sudo setfacl    -m u:rabbitmq:r-x,m::rwx /etc/rabbitmq
 sudo rabbitmq-plugins enable rabbitmq_management rabbitmq_mqtt
 sudo rabbitmqctl add_user  $MQTT_USER $MQTT_PASSWORD
 sudo rabbitmqctl set_user_tags $MQTT_USER administrator
